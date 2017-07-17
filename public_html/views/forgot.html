@@ -1,0 +1,21 @@
+<div class="welcome">
+    <div class="content">
+        <!-- BEGIN FORGOT PASSWORD FORM -->
+        <form name="form" class="forget-form" novalidate ng-submit="resetPassword(form)">
+            <h3 class="font-green">Forgot password ?</h3>
+            <div class="alert alert-danger" ng-if="form.$submitted && cmnSvc.isEmpty(user.email)">
+                <button class="close" data-close="alert" ng-click="cmnSvc.setFormSubmitted(form)"></button>
+                <span> Enter an email address. </span>
+            </div>
+            <p> Enter your email address below to reset your password. </p>
+            <div class="form-group">
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off"
+                       placeholder="E-mel" name="email" ng-model="user.email" required/> </div>
+            <div class="form-actions">
+                <button type="button" id="back-btn" class="btn green btn-outline" ng-click="back()">Back</button>
+                <button type="submit" class="btn btn-success uppercase pull-right">Submit</button>
+            </div>
+        </form>
+        <!-- END FORGOT PASSWORD FORM -->
+    </div>
+</div>

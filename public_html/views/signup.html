@@ -1,0 +1,58 @@
+<div class="welcome">
+    <div class="content">
+        <!-- BEGIN REGISTRATION FORM -->
+        <form name="form" class="register-form" ng-submit="submit(form)" novalidate>
+            <h3 class="font-green">Sign Up</h3>
+            <p class="hint"> Enter your personal profile in below: </p>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Name <span class="field-required">*</span></label>
+                <input class="form-control placeholder-no-fix" type="text" placeholder="Name *" name="fullname"  ng-model="user.name" required/>
+                <span class="field-required" ng-if="form.$submitted && form.fullname.$invalid">
+                    Name is required
+                </span>
+            </div>
+            <p class="hint"> Enter your account details in below: </p>
+            <div class="form-group">
+                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                <label class="control-label visible-ie8 visible-ie9">Email <span class="field-required">*</span></label>
+                <input class="form-control placeholder-no-fix" type="email" placeholder="Email *" name="email" ng-model="user.email" required/>
+                <span class="field-required" ng-if="form.$submitted && form.email.$invalid">
+                    Email is invalid
+                </span>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Kata Laluan <span class="field-required">*</span></label>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="register_password" placeholder="Kata Laluan *" name="password" ng-model="user.password" required/>
+                <span class="field-required" ng-if="form.$submitted && form.password.$invalid">
+                    Password is required
+                </span>
+            </div>
+            <div class="form-group">
+                <label class="control-label visible-ie8 visible-ie9">Pengesahan Kata Laluan <span class="field-required">*</span></label>
+                <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="Pengesahan Kata Laluan *" name="rpassword" ng-model="user.confirmPassword" required/>
+                <span class="field-required" ng-if="form.$submitted && (user.confirmPassword !== user.password)">
+                    Confirm password not match with password
+                </span><br/>
+                <span class="field-required" ng-if="form.$submitted && form.rpassword.$invalid">
+                    Confirm pasword is required
+                </span>
+            </div>
+            <div class="form-group margin-top-20 margin-bottom-20">
+                <label class="mt-checkbox mt-checkbox-outline">
+                    <input type="checkbox" name="tnc" ng-model="term.accept" required/> I agree with
+                    <a href="javascript:;">Term </a> &
+                    <a href="javascript:;">Policy </a>
+                    <span></span>
+                </label>
+                <span class="field-required" ng-if="form.$submitted && !term.accept">
+                    Term & Policy is required
+                </span>
+            </div>
+            <div class="form-actions">
+                <button type="button" id="register-back-btn" class="btn green btn-outline" ng-click="cmnSvc.redirect('welcome')">Back</button>
+                <button type="submit"  class="btn btn-success uppercase pull-right">Submit</button>
+            </div>
+        </form>
+        <!-- END REGISTRATION FORM -->
+    </div>
+</div>

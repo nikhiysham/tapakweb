@@ -1,0 +1,57 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.field-required {
+    color:red;
+}
+
+.alert-box {
+    border-radius: 10px;
+}
+
+.alert-box .header{
+    background-color:#CCC;
+    text-align: center;
+}
+
+.alert-box .body{
+    text-align: center;
+}
+
+.alert-box .footer{
+    text-align: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+div.blockUI.blockMsg.blockPage {
+    background: none !important;
+    border: none !important;
+}
+
+.ngdialog-content {
+  z-index: 10051 !important;
+}
+
+.page-header.navbar .page-logo .logo-default {
+  margin: 3px 0 0 !important;
+}
+
+.dataTables_length {
+  float:left !important;
+}
+
+.dataTables_filter {
+  float:right !important;
+}
+
+.dataTables_info {
+  float:left !important;
+}
+
+.dataTables_paginate {
+  float:right !important;
+}
