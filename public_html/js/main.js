@@ -40,23 +40,6 @@ MetronicApp.config([
 MetronicApp.config([
   "$controllerProvider",
   function($controllerProvider) {
-    var config = {
-      apiKey: "AIzaSyCLcCfgd-OhK5VgjNhgV8vIAI6TKM2ApeI",
-      authDomain: "foodtruck-e8c39.firebaseapp.com",
-      databaseURL: "https://foodtruck-e8c39.firebaseio.com",
-      projectId: "foodtruck-e8c39",
-      storageBucket: "foodtruck-e8c39.appspot.com",
-      messagingSenderId: "67915414966"
-    };
-    // Prod mode
-    //            var config = {
-    //              apiKey: "AIzaSyClBKi3BmZAXlh7HMFyG7xVB4LkiN9FfHk",
-    //              authDomain: "senangkira-27a04.firebaseapp.com",
-    //              databaseURL: "https://senangkira-27a04.firebaseio.com",
-    //              projectId: "senangkira-27a04",
-    //              storageBucket: "senangkira-27a04.appspot.com",
-    //              messagingSenderId: "457929172319"
-    //            };
     firebase.initializeApp(config);
   }
 ]);
