@@ -53,29 +53,8 @@ angular.module("MetronicApp").controller("SlotsController", [
       $scope.dtInstance.rerender();
     };
 
-    $scope.loadSites = function() {
-      return $q(function(resolve, reject) {
-        angularFire.getRef("sites").once(
-          "value",
-          function(snapshot) {
-            var list = [];
-            snapshot.forEach(function(data, ind) {
-              var obj = {};
-              obj.id = data.key;
-              obj.name = data.val().name;
-              obj.description = data.val().description;
-              list.push(obj);
-            });
-            resolve(list);
-          },
-          function(error) {
-            console.log(error);
-          }
-        );
-      });
-    };
-
     $scope.loadCategories = function() {
+      cmnSvc.showLoading();
       return $q(function(resolve, reject) {
         angularFire.getRef("categories").once(
           "value",
@@ -95,7 +74,7 @@ angular.module("MetronicApp").controller("SlotsController", [
             resolve(list);
           },
           function(error) {
-            console.log(error);
+            reject(error.message);
           }
         );
       });
@@ -104,6 +83,7 @@ angular.module("MetronicApp").controller("SlotsController", [
     $scope
       .loadCategories()
       .then(function(resp) {
+        cmnSvc.hideLoading();
         $scope.categories = resp;
         if ($scope.categories.length > 0) {
           angular.forEach($scope.categories, function(val) {
@@ -115,7 +95,31 @@ angular.module("MetronicApp").controller("SlotsController", [
         cmnSvc.showAlert("alert", error);
       });
 
+    $scope.loadSites = function() {
+      cmnSvc.showLoading();
+      return $q(function(resolve, reject) {
+        angularFire.getRef("sites").once(
+          "value",
+          function(snapshot) {
+            var list = [];
+            snapshot.forEach(function(data, ind) {
+              var obj = {};
+              obj.id = data.key;
+              obj.name = data.val().name;
+              obj.description = data.val().description;
+              list.push(obj);
+            });
+            resolve(list);
+          },
+          function(error) {
+            reject(error.message);
+          }
+        );
+      });
+    };
+
     $scope.loadSlots = function() {
+      cmnSvc.showLoading();
       return $q(function(resolve, reject) {
         angularFire.getRef("slots").child($scope.site.id).once(
           "value",
@@ -130,7 +134,7 @@ angular.module("MetronicApp").controller("SlotsController", [
             resolve(list);
           },
           function(error) {
-            console.log(error);
+            reject(error.message);
           }
         );
       });
@@ -145,6 +149,7 @@ angular.module("MetronicApp").controller("SlotsController", [
         $scope
           .loadSlots()
           .then(function(resp) {
+            cmnSvc.hideLoading();
             $scope.slots = resp;
             // console.log($scope.slots);
           })

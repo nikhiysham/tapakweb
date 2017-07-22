@@ -1,0 +1,146 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+  <ul class="page-breadcrumb">
+    <li>
+      <i class="fa fa-home"></i>
+      <a ui-sref="dashboard">Home</a>
+      <i class="fa fa-angle-right"></i>
+    </li>
+    <li>
+      <a ui-sref="datatablesmanaged">Manage Foodtruck Owners</a>
+    </li>
+  </ul>
+</div>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<div class="row" style="margin-top:10px">
+  <div class="col-md-12">
+    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+    <div class="portlet light bordered">
+      <div class="portlet-title">
+        <div class="caption font-dark">
+          <i class="icon-settings font-dark"></i>
+          <span class="caption-subject bold uppercase"> Foodtruck Owner List</span>
+        </div>
+      </div>
+      <div class="portlet-body">
+        <div class="table-toolbar">
+          <div class="row">
+            <div class="col-md-6">
+              <!-- <div class="btn-group">
+                <button id="sample_editable_1_new" class="btn sbold green" data-toggle="modal" data-target="#addCategoryModal" ng-click="clearCategory()"> Add New
+                                    <i class="fa fa-plus"></i>
+                                </button>
+              </div> -->
+            </div>
+            <div class="col-md-6">
+              <div class="btn-group pull-right">
+                <button class="btn green  btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                                    <i class="fa fa-angle-down"></i>
+                                </button>
+                <ul class="dropdown-menu pull-right">
+                  <li>
+                    <a href="javascript:;">
+                                            <i class="fa fa-print"></i> Print </a>
+                  </li>
+                  <li>
+                    <a href="javascript:;">
+                                            <i class="fa fa-file-pdf-o"></i> Save as PDF </a>
+                  </li>
+                  <li>
+                    <a href="javascript:;">
+                                            <i class="fa fa-file-excel-o"></i> Export to Excel </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover table-checkable order-column" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions" dt-column-defs="dtColumnDefs">
+          <thead>
+            <tr>
+              <th class="col-sm-2"> Company Name </th>
+              <th class="col-sm-2"> Foodtruck Name </th>
+              <th class="col-sm-2"> Category </th>
+              <th class="col-sm-1 text-center"> Plate No. </th>
+              <th class="col-sm-2"> Location </th>
+              <th class="col-sm-1 text-center"> Status </th>
+              <th class="col-sm-1">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="odd gradeX" ng-repeat="x in users">
+              <td>{{x.user.company.company_name}}</td>
+              <td>{{x.user.company.ft_name}}</td>
+              <td>{{x.user.category.name}}</td>
+              <td class="text-center">{{x.user.company.plate_no}}</td>
+              <td>{{x.user.company.location}}</td>
+              <td class="text-center">
+                <span class="label label-sm label-success"> Aktif </span>
+              </td>
+              <td class="text-center">
+                <button type="button" ng-click="giveStar(x)" title="Rating now" class="btn btn-warning"><i class="fa fa-star"></i></button>
+                <!-- <button type="button" ng-click="delete(x)" class="btn btn-danger"><i class="fa fa-trash-o"></i></button> -->
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- END EXAMPLE TABLE PORTLET-->
+  </div>
+</div>
+<!-- <div ng-include="'modal/add_product.html'"></div> -->
+
+<div id="addModal" class="modal fade" role="dialog" aria-labelledby="categoryModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">  <span class="caption-subject bold uppercase"> {{modalMode}} Star</span></h4>
+      </div>
+      <form name="form" novalidate ng-submit="submit(form)">
+        <div class="modal-body">
+          <!-- <div> -->
+            <!-- <span style="font-weight:'bold'">Foodtruck Profile<span> -->
+            <!-- <div class="horizontal-divider"></div> -->
+            <div class="form-group">
+              <label for="name" class="form-control-label">Company Name </label>
+              <input type="text" name="company_name" class="form-control" ng-model="user.user.company.company_name" disabled="true" style="color: #000 !important">
+            </div>
+          <!-- </div> -->
+          <div class="form-group">
+            <label for="name" class="form-control-label">Foodtruck Name </label>
+            <input type="text" name="ft_name" class="form-control" ng-model="user.user.company.ft_name" disabled="true" style="color: #000 !important">
+          </div>
+          <div class="form-group">
+            <label for="name" class="form-control-label">Plate No. </label>
+            <input type="text" name="plate_no" class="form-control" ng-model="user.user.company.plate_no" disabled="true" style="color: #000 !important">
+          </div>
+          <div class="form-group">
+            <label for="name" class="form-control-label">Location </label>
+            <input type="text" name="location" class="form-control" ng-model="user.user.company.location" disabled="true" style="color: #000 !important">
+          </div>
+          <div style="padding:20px">
+            <div style="text-align:center; padding-bottom:20px; font-size:16px; font-weight:bold">Rating</div>
+            <rating value="item.rate" ng-model="item.rate" max="30" size="30px" interactive="true"></rating>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success uppercase pull-right">Update</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS -->
+<!-- <script>
+TableDatatablesManaged.init();
+</script> -->
+<!-- END MAIN JS -->

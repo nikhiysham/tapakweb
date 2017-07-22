@@ -52,11 +52,11 @@ angular.module("MetronicApp").controller("CategoryController", [
     };
 
     $scope.loadCategories = function() {
+      cmnSvc.showLoading();
       return $q(function(resolve, reject) {
         angularFire.getRef("categories").once(
           "value",
           function(snapshot) {
-            // console.log(snapshot.val());
             var list = [];
             snapshot.forEach(function(data, ind) {
               var obj = {};
@@ -78,6 +78,7 @@ angular.module("MetronicApp").controller("CategoryController", [
     $scope
       .loadCategories()
       .then(function(resp) {
+        cmnSvc.hideLoading();
         $scope.categories = resp;
         // console.log("Resp:", resp);
       })

@@ -66,7 +66,7 @@ MetronicApp.factory("CommonService", [
       showLoading: function() {
         $.blockUI({
           message:
-            '<div><img src="./../img/loading-dots.gif" style="height:150px"/><div><div style="color:white"> Sila tunggu...</div>'
+            '<div><img src="./../img/loading-dots.gif" style="height:150px"/><div><div style="color:white"> Please wait...</div>'
         });
       },
       hideLoading: function() {

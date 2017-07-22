@@ -33,12 +33,20 @@ div.blockUI.blockMsg.blockPage {
 }
 
 .ngdialog-content {
-  z-index: 10051 !important;
+  z-index: 10059 !important;
+}
+
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+  z-index: 10059 !important;
 }
 
 .page-header.navbar .page-logo .logo-default {
   margin: 3px 0 0 !important;
 }
+/*
+  .modal .modal-dialog {
+    z-index:1000 !important;
+  }*/
 
 .dataTables_length {
   float:left !important;
@@ -54,4 +62,8 @@ div.blockUI.blockMsg.blockPage {
 
 .dataTables_paginate {
   float:right !important;
+}
+
+.horizontal-divider {
+  border-bottom:1px solid #CCC;
 }

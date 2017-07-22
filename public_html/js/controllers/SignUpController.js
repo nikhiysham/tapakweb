@@ -7,6 +7,7 @@ angular.module("MetronicApp").controller("SignUpController", [
   "CommonService",
   "EnumService",
   "AngularFire",
+  "SessionService",
   function(
     $rootScope,
     $scope,
@@ -15,7 +16,8 @@ angular.module("MetronicApp").controller("SignUpController", [
     $state,
     cmnSvc,
     enumSvc,
-    angularFire
+    angularFire,
+    sessionSvc
   ) {
     $scope.cmnSvc = cmnSvc;
     $scope.user = {
@@ -53,8 +55,9 @@ angular.module("MetronicApp").controller("SignUpController", [
                 .then(
                   function() {
                     // Create users table to store additional info
-                    angularFire.getRef("admin").child(result.uid).set({
+                    angularFire.getRef("users").child(result.uid).set({
                       name: $scope.user.name,
+                      profile_type: "admin",
                       created_date: new Date().toString(),
                       updated_date: ""
                     }, function(err) {
