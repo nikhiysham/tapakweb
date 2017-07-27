@@ -29,6 +29,7 @@ angular.module("MetronicApp").controller("UsersController", [
     $scope.cmnSvc = cmnSvc;
     $scope.user = {};
     $scope.users = [];
+    $scope.sites = [];
     $scope.modalMode = "";
     $scope.dtInstance = {};
     $scope.types = enumSvc.getMenuTypes();
@@ -55,107 +56,158 @@ angular.module("MetronicApp").controller("UsersController", [
       $scope.dtInstance.rerender();
     };
 
-    $scope.loadUsers = function(state) {
-      if (state === "/users/foodtruck") {
-        cmnSvc.showLoading();
-        angularFire
-          .getRef("users")
-          .orderByChild("profile_type")
-          .equalTo("foodtruck")
-          .once("value")
-          .then(
-            function(snapshot) {
-              var promises = [];
-              snapshot.forEach(function(data) {
-                var user = {};
-                user = data.val();
-                user.id = data.key;
-                // console.log(user);
-                var promise = $q(function(resolve, reject) {
-                  angularFire
-                    .getRef("companies")
-                    .child(user.id)
-                    .once("value")
-                    .then(function(compSnapshot) {
-                      if (!cmnSvc.isEmpty(compSnapshot.val())) {
-                        var obj = {};
-                        compSnapshot.forEach(function(data) {
-                          obj.id = data.key;
-                          obj.company_name = data.val().company_name;
-                          obj.ft_name = data.val().ft_name;
-                          obj.plate_no = data.val().plate_no;
-                          obj.location = data.val().location;
-                        });
+    $scope.loadSites = function() {
+      cmnSvc.showLoading();
+      return $q(function(resolve, reject) {
+        angularFire.getRef("sites").once(
+          "value",
+          function(snapshot) {
+            var list = [];
+            snapshot.forEach(function(data, ind) {
+              var obj = {};
+              obj.id = data.key;
+              obj.name = data.val().name;
+              obj.description = data.val().description;
+              list.push(obj);
+            });
+            resolve(list);
+          },
+          function(error) {
+            reject(error.message);
+          }
+        );
+      });
+    };
 
-                        user.company = obj;
-                        resolve({ user: user });
-                      } else {
-                        resolve({ user: user });
-                      }
+    $scope
+      .loadSites()
+      .then(function(resp) {
+        $scope.sites = resp;
+      })
+      .catch(function(error) {
+        cmnSvc.showAlert("alert", error);
+      });
+
+    $scope.searchByLocation = function() {
+      console.log($scope.site.id);
+      angularFire
+        .getRef("users")
+        .child("foodtruck")
+        .orderByChild("site_id")
+        .equalTo($scope.site.id)
+        .once(
+          "value",
+          function(snapshot) {
+            catPromises = [];
+            console.log("snapshot val:", snapshot.val());
+            snapshot.forEach(function(data) {
+              var user = {};
+              user = data.val();
+              user.id = data.key;
+
+              var promise = new Promise(function(resolve, reject) {
+                if (!cmnSvc.isEmpty(data.val().category_id)) {
+                  angularFire
+                    .getRef("categories")
+                    .child(data.val().category_id)
+                    .once("value")
+                    .then(function(catSnapshot) {
+                      var category = {};
+                      category = catSnapshot.val();
+                      category.id = catSnapshot.key;
+                      user.category = category;
+                      resolve(user);
                     })
                     .catch(function(error) {
                       reject(error);
                     });
-                });
-                promises.push(promise);
+                } else {
+                  resolve(user);
+                }
               });
 
-              $q
-                .all(promises)
-                .then(function(responses) {
-                  // console.log(responses);
-                  var catPromises = [];
-                  responses.forEach(function(data) {
-                    if (!cmnSvc.isEmpty(data)) {
-                      var promise = new Promise(function(resolve, reject) {
-                        if (!cmnSvc.isEmpty(data.user.category_id)) {
-                          angularFire
-                            .getRef("categories")
-                            .child(data.user.category_id)
-                            .once("value")
-                            .then(function(catSnapshot) {
-                              var category = {};
-                              category = catSnapshot.val();
-                              category.id = catSnapshot.key;
-                              data.user.category = category;
-                              // console.log(data.user);
-                              resolve({ user: data.user });
-                            })
-                            .catch(function(error) {
-                              reject(error);
-                            });
-                        } else {
-                          // console.log(data.user);
-                          resolve({ user: data.user });
-                        }
-                      });
+              catPromises.push(promise);
+            });
 
-                      catPromises.push(promise);
-                    }
-                  });
+            $q
+              .all(catPromises)
+              .then(function(responses) {
+                cmnSvc.hideLoading();
 
-                  return Promise.all(catPromises);
-                })
-                .then(function(responses) {
-                  cmnSvc.hideLoading();
+                $scope.users = responses;
+                console.log("Users:", $scope.users);
+              })
+              .catch(function(error) {
+                cmnSvc.showAlert(
+                  "alert",
+                  "Error during load users [" + error + "]"
+                );
+              });
+          },
+          function(error) {
+            console.log(error);
+          }
+        );
+    };
 
-                  $scope.users = responses;
-                  console.log("Users:", $scope.users);
-                })
-                .catch(function(error) {
-                  cmnSvc.showAlert(
-                    "alert",
-                    "Error during load users [" + error + "]"
-                  );
-                });
-            },
-            function(error) {
-              cmnSvc.showAlert(
-                "alert",
-                "Error during load users [" + error + "]"
-              );
-            }
-          );
+    $scope.loadUsers = function(state) {
+      if (state === "/users/foodtruck") {
+        cmnSvc.showLoading();
+        angularFire.getRef("users").child("foodtruck").once("value").then(
+          function(snapshot) {
+            catPromises = [];
+
+            snapshot.forEach(function(data) {
+              var user = {};
+              user = data.val();
+              user.id = data.key;
+
+              var promise = new Promise(function(resolve, reject) {
+                if (!cmnSvc.isEmpty(data.val().category_id)) {
+                  angularFire
+                    .getRef("categories")
+                    .child(data.val().category_id)
+                    .once("value")
+                    .then(function(catSnapshot) {
+                      var category = {};
+                      category = catSnapshot.val();
+                      category.id = catSnapshot.key;
+                      user.category = category;
+                      resolve(user);
+                    })
+                    .catch(function(error) {
+                      reject(error);
+                    });
+                } else {
+                  resolve(user);
+                }
+              });
+
+              catPromises.push(promise);
+            });
+
+            $q
+              .all(catPromises)
+              .then(function(responses) {
+                cmnSvc.hideLoading();
+
+                $scope.users = responses;
+                // console.log("Users:", $scope.users);
+              })
+              .catch(function(error) {
+                cmnSvc.showAlert(
+                  "alert",
+                  "Error during load users [" + error + "]"
+                );
+              });
+          },
+          function(error) {
+            cmnSvc.showAlert(
+              "alert",
+              "Error during load users [" + error + "]"
+            );
+          }
+        );
       } else if (state === "/users/public") {
       } else {
       }
@@ -172,25 +224,36 @@ angular.module("MetronicApp").controller("UsersController", [
       $scope.modalMode = "EDIT";
       if (!cmnSvc.isEmptyObject(item)) {
         $scope.user = angular.copy(item);
-        !cmnSvc.isEmpty($scope.user.user.star)
-          ? ($scope.item.rate = $scope.user.user.star)
+        !cmnSvc.isEmpty($scope.user.star)
+          ? ($scope.item.rate = $scope.user.star)
           : "";
-        $("#addModal").modal("show");
+        $("#starModal").modal("show");
       } else {
         cmnSvc.showAlert("alert", "Type is required!");
       }
     };
 
-    $scope.submit = function(form) {
+    $scope.editStatus = function(item) {
+      $scope.modalMode = "EDIT";
+      if (!cmnSvc.isEmptyObject(item)) {
+        $scope.user = angular.copy(item);
+        $("#updateModal").modal("show");
+      } else {
+        cmnSvc.showAlert("alert", "Type is required!");
+      }
+    };
+
+    $scope.updateStar = function(form) {
       if (!cmnSvc.isEmpty($scope.item.rate)) {
         cmnSvc.showLoading();
         angularFire
           .getRef("users")
-          .child($scope.user.user.id)
+          .child("foodtruck")
+          .child($scope.user.id)
           .update({ star: $scope.item.rate })
           .then(function(snapshot) {
             cmnSvc.hideLoading();
-            $("#addModal").modal("hide");
+            $("#starModal").modal("hide");
             $timeout(function() {
               $state.transitionTo(
                 $state.current,
@@ -205,14 +268,51 @@ angular.module("MetronicApp").controller("UsersController", [
             cmnSvc.showAlert("alert", "Star has been successfully updated");
           })
           .catch(function(error) {
-            $("#addModal").modal("hide");
+            $("#starModal").modal("hide");
             cmnSvc.showAlert(
               "alert",
               "Error during update star [" + error.message + "]"
             );
           });
       } else {
-        $("#addModal").modal("hide");
+        $("#starModal").modal("hide");
+        cmnSvc.showAlert("alert", "Star is required!");
+      }
+    };
+
+    $scope.updateStatus = function(form) {
+      if (!cmnSvc.isEmpty($scope.item.rate)) {
+        cmnSvc.showLoading();
+        angularFire
+          .getRef("users")
+          .child("foodtruck")
+          .child($scope.user.id)
+          .update({ status: $scope.user.status })
+          .then(function(snapshot) {
+            cmnSvc.hideLoading();
+            $("#updateModal").modal("hide");
+            $timeout(function() {
+              $state.transitionTo(
+                $state.current,
+                {},
+                {
+                  reload: true,
+                  inherit: false,
+                  notify: true
+                }
+              );
+            }, 200);
+            cmnSvc.showAlert("alert", "Status has been successfully updated");
+          })
+          .catch(function(error) {
+            $("#updateModal").modal("hide");
+            cmnSvc.showAlert(
+              "alert",
+              "Error during update star [" + error.message + "]"
+            );
+          });
+      } else {
+        $("#updateModal").modal("hide");
         cmnSvc.showAlert("alert", "Star is required!");
       }
     };

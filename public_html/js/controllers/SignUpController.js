@@ -55,26 +55,32 @@ angular.module("MetronicApp").controller("SignUpController", [
                 .then(
                   function() {
                     // Create users table to store additional info
-                    angularFire.getRef("users").child(result.uid).set({
-                      name: $scope.user.name,
-                      profile_type: "admin",
-                      created_date: new Date().toString(),
-                      updated_date: ""
-                    }, function(err) {
-                      if (err) {
-                        cmnSvc.hideLoading();
-                        var errorMsg = err.message;
-                        cmnSvc.showAlert("alert", errorMsg);
-                      } else {
-                        sessionSvc.set("user_auth", result);
-                        sessionSvc.set("login", "manual");
-                        cmnSvc.hideLoading();
-                        cmnSvc.showAlert(
-                          "alert",
-                          "Tahniah, pendaftaran telah berjaya. Sila tunggu..."
-                        );
-                      }
-                    });
+                    angularFire
+                      .getRef("users")
+                      .child("admin")
+                      .child(result.uid)
+                      .set(
+                        {
+                          name: $scope.user.name,
+                          created_date: new Date().toString(),
+                          updated_date: ""
+                        },
+                        function(err) {
+                          if (err) {
+                            cmnSvc.hideLoading();
+                            var errorMsg = err.message;
+                            cmnSvc.showAlert("alert", errorMsg);
+                          } else {
+                            sessionSvc.set("user_auth", result);
+                            sessionSvc.set("login", "manual");
+                            cmnSvc.hideLoading();
+                            cmnSvc.showAlert(
+                              "alert",
+                              "Tahniah, pendaftaran telah berjaya. Sila tunggu..."
+                            );
+                          }
+                        }
+                      );
                   },
                   function(err) {
                     cmnSvc.hideLoading();
